@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vagif | Salyan Technical Lab</title>
+    <style>
+        :root { --main-color: #00ff00; --bg-color: #0a0a0a; --card-bg: #161616; }
+        body { background: var(--bg-color); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; text-align: center; }
+        
+        /* Dil Seçimi */
+        .lang-bar { background: #222; padding: 10px; display: flex; justify-content: center; gap: 15px; }
+        .lang-btn { cursor: pointer; border: 1px solid var(--main-color); padding: 5px 10px; border-radius: 5px; color: var(--main-color); background: transparent; transition: 0.3s; }
+        .lang-btn:hover { background: var(--main-color); color: black; }
+
+        /* Profil */
+        .header { padding: 50px 20px; }
+        .avatar { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--main-color); margin-bottom: 20px; }
+        
+        .section { background: var(--card-bg); margin: 20px auto; padding: 20px; width: 80%; max-width: 600px; border-radius: 10px; border-left: 5px solid var(--main-color); }
+        
+        /* Rəy Bölməsi */
+        .review-box { display: flex; flex-direction: column; gap: 10px; }
+        input, textarea, select { background: #222; border: 1px solid #444; color: white; padding: 10px; border-radius: 5px; }
+        .submit-btn { background: var(--main-color); color: black; font-weight: bold; border: none; padding: 12px; cursor: pointer; border-radius: 5px; }
+
+        .stars { color: #ffd700; font-size: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="lang-bar">
+        <button class="lang-btn" onclick="changeLang('az')">Azerbaijan</button>
+        <button class="lang-btn" onclick="changeLang('tr')">Turkish</button>
+        <button class="lang-btn" onclick="changeLang('en')">English</button>
+    </div>
+
+    <div class="header">
+        <img src="https://via.placeholder.com/120" class="avatar" alt="Vagif">
+        <h1 id="name">Vaqif</h1>
+        <p id="bio">Elektronika həvəskarı və Texnik</p>
+    </div>
+
+    <div class="section">
+        <h2 id="about-title">Haqqımda</h2>
+        <p id="about-text">Mən Salyan bölgəsindənəm. 13 yaşım var. Köhnə cihazları modifikasiya etməyi və proqram təminatı ilə işləməyi sevirəm. Acer Aspire One D270-i haker bazasına çevirmişəm!</p>
+    </div>
+
+    <div class="section">
+        <h2 id="review-title">Rəy Bildirin</h2>
+        <div class="review-box">
+            <input type="text" id="reviewer-name" placeholder="Adınız">
+            <textarea id="reviewer-text" placeholder="Rəyiniz"></textarea>
+            <select id="stars">
+                <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                <option value="4">⭐⭐⭐⭐ (4)</option>
+                <option value="3">⭐⭐⭐ (3)</option>
+                <option value="2">⭐⭐ (2)</option>
+                <option value="1">⭐ (1)</option>
+            </select>
+            <button class="submit-btn" onclick="sendReview()" id="send-btn">Göndər</button>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            az: {
+                bio: "Elektronika həvəskarı və Texnik",
+                aboutTitle: "Haqqımda",
+                aboutText: "Mən Salyan bölgəsindənəm. 13 yaşım var. Köhnə cihazları modifikasiya etməyi sevirəm.",
+                reviewTitle: "Rəy Bildirin",
+                sendBtn: "Göndər",
+                placeName: "Adınız",
+                placeText: "Rəyiniz"
+            },
+            tr: {
+                bio: "Elektronik Meraklısı ve Teknisyen",
+                aboutTitle: "Hakkımda",
+                aboutText: "Azerbaycan, Salyan bölgesindeyim. 13 yaşındayım. Eski cihazları modifiye etmeyi seviyorum.",
+                reviewTitle: "Yorum Yap",
+                sendBtn: "Gönder",
+                placeName: "Adınız",
+                placeText: "Yorumunuz"
+            },
+            en: {
+                bio: "Electronics Enthusiast & Techie",
+                aboutTitle: "About Me",
+                aboutText: "I'm from Salyan, Azerbaijan. 13 years old. I love modifying old devices and tech experiments.",
+                reviewTitle: "Leave a Review",
+                sendBtn: "Send",
+                placeName: "Your Name",
+                placeText: "Your Review"
+            }
+        };
+
+        function changeLang(lang) {
+            document.getElementById('bio').innerText = translations[lang].bio;
+            document.getElementById('about-title').innerText = translations[lang].aboutTitle;
+            document.getElementById('about-text').innerText = translations[lang].aboutText;
+            document.getElementById('review-title').innerText = translations[lang].reviewTitle;
+            document.getElementById('send-btn').innerText = translations[lang].sendBtn;
+            document.getElementById('reviewer-name').placeholder = translations[lang].placeName;
+            document.getElementById('reviewer-text').placeholder = translations[lang].placeText;
+        }
+
+        function sendReview() {
+            const name = document.getElementById('reviewer-name').value;
+            alert("Təşəkkürlər " + name + "! Rəyiniz qeydə alındı.");
+        }
+    </script>
+</body>
+</html>
