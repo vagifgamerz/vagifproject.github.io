@@ -2,111 +2,453 @@
 <html lang="az">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vagif | Salyan Technical Lab</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Minecraft Bedrock Mobile Master</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        :root { --main-color: #00ff00; --bg-color: #0a0a0a; --card-bg: #161616; }
-        body { background: var(--bg-color); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; text-align: center; }
-        
-        /* Dil Seçimi */
-        .lang-bar { background: #222; padding: 10px; display: flex; justify-content: center; gap: 15px; }
-        .lang-btn { cursor: pointer; border: 1px solid var(--main-color); padding: 5px 10px; border-radius: 5px; color: var(--main-color); background: transparent; transition: 0.3s; }
-        .lang-btn:hover { background: var(--main-color); color: black; }
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #000; color: #fff; position: fixed; }
 
-        /* Profil */
-        .header { padding: 50px 20px; }
-        .avatar { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--main-color); margin-bottom: 20px; }
+        /* 🟥 MOJANG SPLASH SCREEN VƏ FAİZLİ YÜKLƏNMƏ */
+        #mojang-screen { position: absolute; width: 100%; height: 100%; background: #ef3240; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 500; }
+        #mojang-logo { font-size: 32px; font-weight: 900; letter-spacing: 5px; color: #fff; text-shadow: 2px 2px 0px #ba1c27; margin-bottom: 20px; }
         
-        .section { background: var(--card-bg); margin: 20px auto; padding: 20px; width: 80%; max-width: 600px; border-radius: 10px; border-left: 5px solid var(--main-color); }
-        
-        /* Rəy Bölməsi */
-        .review-box { display: flex; flex-direction: column; gap: 10px; }
-        input, textarea, select { background: #222; border: 1px solid #444; color: white; padding: 10px; border-radius: 5px; }
-        .submit-btn { background: var(--main-color); color: black; font-weight: bold; border: none; padding: 12px; cursor: pointer; border-radius: 5px; }
+        /* FULLSCREEN AKTIVLESDIRICI DUYME */
+        #mojang-start-btn { background: #4a4a4a; border: 3px solid #000; padding: 12px 30px; font-weight: bold; font-size: 16px; color: #ffff55; cursor: pointer; border-radius: 4px; box-shadow: inset -4px -4px #2e2e2e, inset 4px 4px #8b8b8b; text-shadow: 2px 2px #000; margin-bottom: 25px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
-        .stars { color: #ffd700; font-size: 20px; }
+        #mojang-load-text { font-size: 14px; color: #fff; font-weight: bold; margin-bottom: 8px; }
+        #mojang-bar-bg { width: 220px; height: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; overflow: hidden; margin-bottom: 5px; }
+        #mojang-bar { width: 0%; height: 100%; background: #fff; }
+        #mojang-percent { font-size: 14px; font-weight: bold; color: #fff; }
+
+        /* ANA MENYU */
+        #main-menu { position: absolute; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('https://wallpapercave.com/wp/wp5294548.jpg') no-repeat center; background-size: cover; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 100; }
+        #logo { width: 320px; max-width: 80%; margin-bottom: 25px; filter: drop-shadow(4px 4px 0px #000); }
+        .mc-btn { width: 260px; background: #4a4a4a; border: 3px solid #000; padding: 10px; text-align: center; font-weight: bold; font-size: 16px; color: #e0e0e0; cursor: pointer; border-radius: 4px; box-shadow: inset -4px -4px #2e2e2e, inset 4px 4px #8b8b8b; text-shadow: 2px 2px #000; margin-bottom: 10px; }
+
+        /* DÜNYA YARATMA */
+        #create-world-menu { position: absolute; width: 100%; height: 100%; background: #2c2c2c; display: none; flex-direction: column; padding: 20px; z-index: 110; overflow-y: auto; align-items: center; }
+        .setting-group { background: #202020; border: 2px solid #000; padding: 12px; margin-bottom: 10px; border-radius: 5px; display: flex; flex-direction: column; gap: 5px; width: 100%; max-width: 400px; }
+        .setting-group label { font-weight: bold; color: #aaa; font-size: 12px; }
+        .setting-group input, .setting-group select { background: #141414; border: 2px solid #4a4a4a; padding: 6px; color: #fff; font-size: 14px; }
+        .action-buttons { display: flex; gap: 15px; margin-top: 15px; }
+
+        /* SECONDARY LOADING SCREEN */
+        #loading-screen { position: absolute; width: 100%; height: 100%; background: #141414; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 120; }
+        #loading-bar-bg { width: 250px; height: 12px; background: #333; border: 2px solid #000; margin-top: 15px; overflow: hidden; }
+        #loading-bar { width: 0%; height: 100%; background: #55ff55; }
+
+        /* GAME HUD & STATS */
+        #game-canvas { width: 100%; height: 100%; display: none; }
+        #crosshair { position: absolute; top: 50%; left: 50%; width: 16px; height: 16px; transform: translate(-50%, -50%); pointer-events: none; z-index: 10; display: none; }
+        #crosshair::before, #crosshair::after { content: ''; position: absolute; background: #fff; opacity: 0.8; }
+        #crosshair::before { top: 7px; left: 0; width: 16px; height: 2px; }
+        #crosshair::after { top: 0; left: 7px; width: 2px; height: 16px; }
+
+        /* MOBİL CONTROLS */
+        #mobile-joystick { position: absolute; bottom: 30px; left: 30px; width: 110px; height: 110px; background: rgba(255,255,255,0.15); border: 3px solid rgba(255,255,255,0.4); border-radius: 50%; display: none; z-index: 50; touch-action: none; }
+        #joystick-stick { position: absolute; top: 30px; left: 30px; width: 44px; height: 44px; background: rgba(255,255,255,0.6); border-radius: 50%; }
+        #mobile-jump { position: absolute; bottom: 45px; right: 30px; width: 60px; height: 60px; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.5); border-radius: 50%; display: none; z-index: 50; text-align: center; line-height: 55px; font-weight: bold; font-size: 22px; }
+
+        /* ❤️ CAN VƏ 🍖 ACLIQ HUD PANELI */
+        #stats-panel { position: absolute; bottom: 72px; left: 50%; transform: translateX(-50%); display: none; width: 390px; justify-content: space-between; pointer-events: none; z-index: 55; padding: 0 5px; }
+        .stat-row { display: flex; gap: 1px; font-size: 14px; }
+        .heart { color: #ff2222; text-shadow: 1px 1px #000; }
+        .hunger { color: #ffaa00; text-shadow: 1px 1px #000; }
+
+        /* 🎒 9 SLOTLU REAL BEDROCK HOTBAR */
+        #hotbar-container { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: none; gap: 3px; background: rgba(0,0,0,0.55); padding: 4px; border-radius: 2px; border: 2px solid #4a4a4a; z-index: 55; align-items: center; }
+        .hotbar-slot { width: 38px; height: 38px; background: #8b8b8b; border: 3px solid #3c3c3c; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; text-align: center; color: #fff; cursor: pointer; }
+        .hotbar-slot.active { border-color: #ffff55; background: #b0b0b0; box-shadow: 0 0 4px #ffff55; }
+        #btn-inventory-toggle { width: 38px; height: 38px; background: #555; border: 3px solid #000; font-weight: bold; text-align: center; line-height: 32px; cursor: pointer; color: #ffff55; }
+
+        /* ENVANTER PANELİ */
+        #inventory-screen { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; background: rgba(44, 44, 44, 0.98); border: 4px solid #000; padding: 15px; display: none; z-index: 200; box-shadow: 0 0 20px #000; }
+        .inv-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; }
+        .inv-item { background: #8b8b8b; border: 3px solid #3c3c3c; padding: 8px 4px; text-align: center; font-weight: bold; font-size: 11px; cursor: pointer; color: #000; }
+        .inv-item:hover { background: #ffff55; }
+        #close-inv { width: 100%; margin-top: 15px; background: #ac3232; padding: 6px; text-align: center; font-weight: bold; border: 2px solid #000; cursor: pointer; }
+        
+        #dimension-indicator { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.7); padding: 5px 12px; border-radius: 3px; font-size: 11px; font-weight: bold; color: #55ff55; display: none; pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <div class="lang-bar">
-        <button class="lang-btn" onclick="changeLang('az')">Azerbaijan</button>
-        <button class="lang-btn" onclick="changeLang('tr')">Turkish</button>
-        <button class="lang-btn" onclick="changeLang('en')">English</button>
+    <div id="mojang-screen">
+        <div id="mojang-logo">MOJANG STUDIOS</div>
+        <div id="mojang-start-btn" onclick="requestFullscreenAndStart()">OYNA (MİNECRAFT BEDROCK)</div>
+        <div id="mojang-load-text" style="display:none;">Yüklənir...</div>
+        <div id="mojang-bar-bg" style="display:none;"><div id="mojang-bar"></div></div>
+        <div id="mojang-percent" style="display:none;">0%</div>
     </div>
 
-    <div class="header">
-        <img src="https://via.placeholder.com/120" class="avatar" alt="Vagif">
-        <h1 id="name">Vaqif</h1>
-        <p id="bio">Elektronika həvəskarı və Texnik</p>
+    <div id="main-menu">
+        <img id="logo" src="https://upload.wikimedia.org/wikipedia/en/5/51/Minecraft_logo.svg" alt="Minecraft">
+        <div class="mc-btn" onclick="openCreateMenu()">Play (Oyna)</div>
     </div>
 
-    <div class="section">
-        <h2 id="about-title">Haqqımda</h2>
-        <p id="about-text">Mən Salyan bölgəsindənəm. 13 yaşım var. Köhnə cihazları modifikasiya etməyi və proqram təminatı ilə işləməyi sevirəm. Acer Aspire One D270-i haker bazasına çevirmişəm!</p>
-    </div>
-
-    <div class="section">
-        <h2 id="review-title">Rəy Bildirin</h2>
-        <div class="review-box">
-            <input type="text" id="reviewer-name" placeholder="Adınız">
-            <textarea id="reviewer-text" placeholder="Rəyiniz"></textarea>
-            <select id="stars">
-                <option value="5">⭐⭐⭐⭐⭐ (5)</option>
-                <option value="4">⭐⭐⭐⭐ (4)</option>
-                <option value="3">⭐⭐⭐ (3)</option>
-                <option value="2">⭐⭐ (2)</option>
-                <option value="1">⭐ (1)</option>
+    <div id="create-world-menu">
+        <div style="font-size:18px; font-weight:bold; margin-bottom:15px; text-shadow:2px 2px #000;">Create New World</div>
+        <div class="setting-group">
+            <label>World Name:</label>
+            <input type="text" id="world-name" value="Bedrock Mobile PE">
+        </div>
+        <div class="setting-group">
+            <label>Game Mode:</label>
+            <select id="game-mode">
+                <option value="creative">Creative</option>
+                <option value="survival">Survival</option>
             </select>
-            <button class="submit-btn" onclick="sendReview()" id="send-btn">Göndər</button>
+        </div>
+        <div class="action-buttons">
+            <div class="mc-btn" style="background:#107c41; width:120px;" onclick="startLoadingWorld()">Create</div>
+            <div class="mc-btn" style="background:#ac3232; width:120px;" onclick="document.getElementById('create-world-menu').style.display='none'">Cancel</div>
         </div>
     </div>
 
+    <div id="loading-screen">
+        <div style="font-size:18px; font-weight:bold; color:#55ff55;">Building Terrain...</div>
+        <div id="loading-bar-bg"><div id="loading-bar"></div></div>
+    </div>
+
+    <div id="crosshair"></div>
+    <div id="dimension-indicator">Dimension: Overworld</div>
+    
+    <div id="mobile-joystick"><div id="joystick-stick"></div></div>
+    <div id="mobile-jump">↑</div>
+
+    <div id="stats-panel">
+        <div class="stat-row" id="heart-row">❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️</div>
+        <div class="stat-row" id="hunger-row">🍖🍖🍖🍖🍖🍖🍖🍖🍖🍖</div>
+    </div>
+
+    <div id="hotbar-container">
+        <div class="hotbar-slot active" id="slot-0" onclick="setActiveSlot(0)">Grass</div>
+        <div class="hotbar-slot" id="slot-1" onclick="setActiveSlot(1)">-</div>
+        <div class="hotbar-slot" id="slot-2" onclick="setActiveSlot(2)">-</div>
+        <div class="hotbar-slot" id="slot-3" onclick="setActiveSlot(3)">-</div>
+        <div class="hotbar-slot" id="slot-4" onclick="setActiveSlot(4)">-</div>
+        <div class="hotbar-slot" id="slot-5" onclick="setActiveSlot(5)">-</div>
+        <div class="hotbar-slot" id="slot-6" onclick="setActiveSlot(6)">-</div>
+        <div class="hotbar-slot" id="slot-7" onclick="setActiveSlot(7)">-</div>
+        <div class="hotbar-slot" id="slot-8" onclick="setActiveSlot(8)">-</div>
+        <div id="btn-inventory-toggle" onclick="toggleInventory()">🎒</div>
+    </div>
+
+    <div id="inventory-screen">
+        <h3 style="text-align:center; color:#ffff55; font-size: 16px;">Eşya Seç və Bara Qoy</h3>
+        <div class="inv-grid">
+            <div class="inv-item" onclick="pushToHotbar('Grass', 0x4caf50)">Grass</div>
+            <div class="inv-item" onclick="pushToHotbar('Wood', 0x8b5a2b)">Wood</div>
+            <div class="inv-item" onclick="pushToHotbar('Bed', 0xe74c3c)">Bed</div>
+            <div class="inv-item" onclick="pushToHotbar('Nether', 0x78281f)">Nether</div>
+            <div class="inv-item" onclick="pushToHotbar('Stone', 0x7f8c8d)">Stone</div>
+            <div class="inv-item" onclick="pushToHotbar('Brick', 0xd35400)">Brick</div>
+        </div>
+        <div id="close-inv" onclick="toggleInventory()">BAĞLA</div>
+    </div>
+
+    <div id="game-canvas"></div>
+
     <script>
-        const translations = {
-            az: {
-                bio: "Elektronika həvəskarı və Texnik",
-                aboutTitle: "Haqqımda",
-                aboutText: "Mən Salyan bölgəsindənəm. 13 yaşım var. Köhnə cihazları modifikasiya etməyi sevirəm.",
-                reviewTitle: "Rəy Bildirin",
-                sendBtn: "Göndər",
-                placeName: "Adınız",
-                placeText: "Rəyiniz"
-            },
-            tr: {
-                bio: "Elektronik Meraklısı ve Teknisyen",
-                aboutTitle: "Hakkımda",
-                aboutText: "Azerbaycan, Salyan bölgesindeyim. 13 yaşındayım. Eski cihazları modifiye etmeyi seviyorum.",
-                reviewTitle: "Yorum Yap",
-                sendBtn: "Gönder",
-                placeName: "Adınız",
-                placeText: "Yorumunuz"
-            },
-            en: {
-                bio: "Electronics Enthusiast & Techie",
-                aboutTitle: "About Me",
-                aboutText: "I'm from Salyan, Azerbaijan. 13 years old. I love modifying old devices and tech experiments.",
-                reviewTitle: "Leave a Review",
-                sendBtn: "Send",
-                placeName: "Your Name",
-                placeText: "Your Review"
+        // 📱 TAM EKRAN VƏ LANDSCAPE LOGİKASI
+        function requestFullscreenAndStart() {
+            document.getElementById('mojang-start-btn').style.display = 'none';
+            document.getElementById('mojang-load-text').style.display = 'block';
+            document.getElementById('mojang-bar-bg').style.display = 'block';
+            document.getElementById('mojang-percent').style.display = 'block';
+
+            // Fullscreen Aktivləşdirmə
+            const docElm = document.documentElement;
+            if (docElm.requestFullscreen) {
+                docElm.requestFullscreen();
+            } else if (docElm.webkitRequestFullscreen) {
+                docElm.webkitRequestFullscreen();
+            } else if (docElm.msRequestFullscreen) {
+                docElm.msRequestFullscreen();
             }
-        };
 
-        function changeLang(lang) {
-            document.getElementById('bio').innerText = translations[lang].bio;
-            document.getElementById('about-title').innerText = translations[lang].aboutTitle;
-            document.getElementById('about-text').innerText = translations[lang].aboutText;
-            document.getElementById('review-title').innerText = translations[lang].reviewTitle;
-            document.getElementById('send-btn').innerText = translations[lang].sendBtn;
-            document.getElementById('reviewer-name').placeholder = translations[lang].placeName;
-            document.getElementById('reviewer-text').placeholder = translations[lang].placeText;
+            // Ekranı Avtomatik Yan Çevirmək (Landscape)
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch((err) => {
+                    console.log("Ekran fırlatma dəstəklənmir və ya kilidlənmədi.");
+                });
+            }
+
+            // Mojang Yüklənmə Faizi Zolağı
+            let mojangProgress = 0;
+            const mBar = document.getElementById('mojang-bar');
+            const mPercent = document.getElementById('mojang-percent');
+
+            const mojangInterval = setInterval(() => {
+                mojangProgress += Math.floor(Math.random() * 8) + 2;
+                if(mojangProgress > 100) mojangProgress = 100;
+                
+                mBar.style.width = mojangProgress + '%';
+                mPercent.innerText = mojangProgress + '%';
+
+                if(mojangProgress >= 100) {
+                    clearInterval(mojangInterval);
+                    document.getElementById('mojang-screen').style.display = 'none';
+                    document.getElementById('main-menu').style.display = 'flex';
+                    window.dispatchEvent(new Event('resize')); // Qrafikanı yenilə
+                }
+            }, 60);
         }
 
-        function sendReview() {
-            const name = document.getElementById('reviewer-name').value;
-            alert("Təşəkkürlər " + name + "! Rəyiniz qeydə alındı.");
+        function openCreateMenu() { document.getElementById('create-world-menu').style.display = 'flex'; }
+        
+        function startLoadingWorld() {
+            document.getElementById('create-world-menu').style.display = 'none';
+            document.getElementById('main-menu').style.display = 'none';
+            document.getElementById('loading-screen').style.display = 'flex';
+
+            let prog = 0;
+            const bar = document.getElementById('loading-bar');
+            const lInt = setInterval(() => {
+                prog += 15;
+                bar.style.width = prog + '%';
+                if(prog >= 100) {
+                    clearInterval(lInt);
+                    document.getElementById('loading-screen').style.display = 'none';
+                    initMobileMinecraft();
+                }
+            }, 100);
         }
+
+        let isInventoryOpen = false;
+        function toggleInventory() {
+            isInventoryOpen = !isInventoryOpen;
+            document.getElementById('inventory-screen').style.display = isInventoryOpen ? 'block' : 'none';
+        }
+
+        // Hotbar massivi
+        let hotbarBlocks = [
+            { name: 'Grass', color: 0x4caf50 },
+            { name: '-', color: null }, { name: '-', color: null }, { name: '-', color: null },
+            { name: '-', color: null }, { name: '-', color: null }, { name: '-', color: null },
+            { name: '-', color: null }, { name: '-', color: null }
+        ];
+        let currentActiveSlotIndex = 0;
+
+        function pushToHotbar(name, color) {
+            let placed = false;
+            for(let i=0; i<9; i++) {
+                if(hotbarBlocks[i].name === '-' || hotbarBlocks[i].name === name) {
+                    hotbarBlocks[i] = { name: name, color: color };
+                    document.getElementById('slot-' + i).innerText = name;
+                    placed = true;
+                    break;
+                }
+            }
+            if(!placed) {
+                hotbarBlocks[currentActiveSlotIndex] = { name: name, color: color };
+                document.getElementById('slot-' + currentActiveSlotIndex).innerText = name;
+            }
+            toggleInventory();
+            checkDimensionChange(name);
+        }
+
+        function setActiveSlot(index) {
+            currentActiveSlotIndex = index;
+            document.querySelectorAll('.hotbar-slot').forEach(s => s.classList.remove('active'));
+            document.getElementById('slot-' + index).classList.add('active');
+            
+            if(hotbarBlocks[index].name !== '-') {
+                checkDimensionChange(hotbarBlocks[index].name);
+            }
+        }
+
+        function checkDimensionChange(blockName) {
+            if(blockName === 'Nether') {
+                switchToNether();
+            } else if (blockName !== '-') {
+                switchToOverworld();
+            }
+        }
+
+        // ==========================================
+        // REAL MOBİL 3D BEDROCK MÜHƏRRİKİ (THREE.JS)
+        // ==========================================
+        let scene, camera, renderer, blocks = [];
+        let moveX = 0, moveZ = 0, isMoving = false;
+
+        function initMobileMinecraft() {
+            document.getElementById('game-canvas').style.display = 'block';
+            document.getElementById('crosshair').style.display = 'block';
+            document.getElementById('mobile-joystick').style.display = 'block';
+            document.getElementById('mobile-jump').style.display = 'block';
+            document.getElementById('hotbar-container').style.display = 'flex';
+            document.getElementById('dimension-indicator').style.display = 'block';
+            document.getElementById('stats-panel').style.display = 'flex';
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x5c9eff);
+            scene.fog = new THREE.FogExp2(0x5c9eff, 0.04);
+
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 3, 6);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('game-canvas').appendChild(renderer.domElement);
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+            let sun = new THREE.DirectionalLight(0xffffff, 0.7);
+            sun.position.set(5, 20, 5);
+            scene.add(sun);
+
+            generateWorldBlocks(0x4caf50);
+
+            // JOYSTICK SİSTEMİ
+            const joystick = document.getElementById('mobile-joystick');
+            const stick = document.getElementById('joystick-stick');
+            let joyCenterX = 0, joyCenterY = 0;
+
+            joystick.addEventListener('touchstart', (e) => {
+                isMoving = true;
+                const rect = joystick.getBoundingClientRect();
+                joyCenterX = rect.left + rect.width / 2;
+                joyCenterY = rect.top + rect.height / 2;
+            });
+
+            joystick.addEventListener('touchmove', (e) => {
+                if (!isMoving) return;
+                const touch = e.touches[0];
+                let dX = touch.clientX - joyCenterX;
+                let dY = touch.clientY - joyCenterY;
+                const distance = Math.min(Math.sqrt(dX*dX + dY*dY), 40);
+
+                const angle = Math.atan2(dY, dX);
+                stick.style.transform = `translate(${Math.cos(angle)*distance}px, ${Math.sin(angle)*distance}px)`;
+
+                moveX = Math.cos(angle) * (distance / 40);
+                moveZ = Math.sin(angle) * (distance / 40);
+            });
+
+            joystick.addEventListener('touchend', () => {
+                isMoving = false;
+                stick.style.transform = 'translate(0px, 0px)';
+                moveX = 0; moveZ = 0;
+            });
+
+            // KAMERANI ETRAFA FIRLATMAQ (SÜRÜŞDÜRMƏK)
+            let lastTouchX = 0, lastTouchY = 0;
+            window.addEventListener('touchstart', (e) => {
+                if(e.touches[0].clientX > window.innerWidth / 3) {
+                    lastTouchX = e.touches[0].clientX;
+                    lastTouchY = e.touches[0].clientY;
+                }
+            });
+
+            window.addEventListener('touchmove', (e) => {
+                if(isInventoryOpen) return;
+                if(e.touches[0].clientX > window.innerWidth / 3) {
+                    let tX = e.touches[0].clientX;
+                    let tY = e.touches[0].clientY;
+
+                    camera.rotation.y -= (tX - lastTouchX) * 0.006;
+                    camera.rotation.x -= (tY - lastTouchY) * 0.006;
+                    camera.rotation.x = Math.max(-Math.PI/2.5, Math.min(Math.PI/2.5, camera.rotation.x));
+
+                    lastTouchX = tX;
+                    lastTouchY = tY;
+                }
+            });
+
+            // BLOK QOYMAQ (DÜNYAYA TAP ETMƏK)
+            window.addEventListener('touchend', (e) => {
+                if (e.changedTouches[0].clientX > window.innerWidth / 3 && e.changedTouches[0].clientY < window.innerHeight - 100) {
+                    let currentActiveBlock = hotbarBlocks[currentActiveSlotIndex];
+                    if(currentActiveBlock.name === '-') return;
+
+                    const raycaster = new THREE.Raycaster();
+                    raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
+                    const intersects = raycaster.intersectObjects(blocks);
+
+                    if (intersects.length > 0) {
+                        const hit = intersects[0];
+                        const normal = hit.face.normal;
+                        const geom = new THREE.BoxGeometry(1, 1, 1);
+                        const mat = new THREE.MeshLambertMaterial({ color: currentActiveBlock.color });
+                        const newB = new THREE.Mesh(geom, mat);
+                        newB.position.copy(hit.object.position).add(normal);
+
+                        const edges = new THREE.EdgesGeometry(geom);
+                        const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x111111 }));
+                        newB.add(line);
+
+                        scene.add(newB);
+                        blocks.push(newB);
+                    }
+                }
+            });
+
+            // TULLANMA (JUMP) DÜYMƏSİ
+            document.getElementById('mobile-jump').addEventListener('touchstart', () => {
+                if(camera.position.y <= 3) camera.position.y += 1.4;
+            });
+
+            function animate() {
+                requestAnimationFrame(animate);
+                if (isMoving) {
+                    camera.translateZ(moveZ * 0.09);
+                    camera.translateX(moveX * 0.09);
+                }
+                if(camera.position.y > 3) camera.position.y -= 0.05;
+                if(camera.position.y < 3) camera.position.y = 3;
+
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+
+        function generateWorldBlocks(colorCode) {
+            blocks.forEach(b => scene.remove(b));
+            blocks = [];
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const material = new THREE.MeshLambertMaterial({ color: colorCode });
+
+            for (let x = -8; x <= 8; x++) {
+                for (let z = -8; z <= 8; z++) {
+                    const block = new THREE.Mesh(geometry, material);
+                    block.position.set(x, 0, z);
+                    const edges = new THREE.EdgesGeometry(geometry);
+                    const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x111111 }));
+                    block.add(line);
+                    scene.add(block);
+                    blocks.push(block);
+                }
+            }
+        }
+
+        function switchToNether() {
+            if(!scene) return;
+            scene.background = new THREE.Color(0x3a0505);
+            scene.fog.color = new THREE.Color(0x3a0505);
+            document.getElementById('dimension-indicator').innerText = "Dimension: Nether";
+            document.getElementById('dimension-indicator').style.color = "#ff4545";
+            generateWorldBlocks(0x78281f);
+        }
+
+        function switchToOverworld() {
+            if(!scene) return;
+            scene.background = new THREE.Color(0x5c9eff);
+            scene.fog.color = new THREE.Color(0x5c9eff);
+            document.getElementById('dimension-indicator').innerText = "Dimension: Overworld";
+            document.getElementById('dimension-indicator').style.color = "#55ff55";
+            generateWorldBlocks(0x4caf50);
+        }
+
+        // Brauzer və ya Ekran ölçüsü fırlananda görüntünün əyilməməsi üçün nizamlayıcı
+        window.addEventListener('resize', () => {
+            if(camera && renderer) {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        });
     </script>
 </body>
 </html>
