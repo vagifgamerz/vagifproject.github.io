@@ -3,226 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Minecraft Bedrock Mobile Master</title>
+    <title>Minecraft Pocket Edition - Vagif Edition</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body, html { width: 100%; height: 100%; overflow: hidden; background: #000; color: #fff; position: fixed; }
 
-        /* 🟥 MOJANG SPLASH SCREEN VƏ FAİZLİ YÜKLƏNMƏ */
+        /* MOJANG SPLASH SCREEN */
         #mojang-screen { position: absolute; width: 100%; height: 100%; background: #ef3240; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 500; }
         #mojang-logo { font-size: 32px; font-weight: 900; letter-spacing: 5px; color: #fff; text-shadow: 2px 2px 0px #ba1c27; margin-bottom: 20px; }
-        
-        #mojang-start-btn { background: #4a4a4a; border: 3px solid #000; padding: 12px 30px; font-weight: bold; font-size: 16px; color: #ffff55; cursor: pointer; border-radius: 4px; box-shadow: inset -4px -4px #2e2e2e, inset 4px 4px #8b8b8b; text-shadow: 2px 2px #000; margin-bottom: 25px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        #mojang-start-btn { background: #4a4a4a; border: 3px solid #000; padding: 12px 30px; font-weight: bold; font-size: 16px; color: #ffff55; cursor: pointer; border-radius: 4px; box-shadow: inset -4px -4px #2e2e2e, inset 4px 4px #8b8b8b; text-shadow: 2px 2px #000; }
 
-        #mojang-load-text { font-size: 14px; color: #fff; font-weight: bold; margin-bottom: 8px; }
-        #mojang-bar-bg { width: 220px; height: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; overflow: hidden; margin-bottom: 5px; }
-        #mojang-bar { width: 0%; height: 100%; background: #fff; }
-        #mojang-percent { font-size: 14px; font-weight: bold; color: #fff; }
-
-        /* 🌲 REAL BEDROCK ANA MENYU */
+        /* ORIJINAL MC BEDROCK ANA MENYU */
         #main-menu { position: absolute; width: 100%; height: 100%; display: none; background: #000; z-index: 100; overflow: hidden; }
-        
-        /* Hərəkətli Panorama Fonu */
-        #menu-panorama { position: absolute; width: 200%; height: 100%; background: url('https://wallpapercave.com/wp/wp5294548.jpg') repeat-x center; background-size: cover; filter: blur(4px) brightness(0.7); animation: panoramaScroll 40s linear infinite; z-index: 1; }
+        #menu-panorama { position: absolute; width: 200%; height: 100%; background: url('https://wallpapercave.com/wp/wp5294548.jpg') repeat-x center; background-size: cover; filter: blur(3px) brightness(0.6); animation: panoramaScroll 35s linear infinite; z-index: 1; }
         @keyframes panoramaScroll { 0% { left: 0; } 100% { left: -100%; } }
-
-        #menu-content { position: absolute; width: 100%; height: 100%; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        #menu-content { position: absolute; width: 100%; height: 100%; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        #logo { width: 320px; max-width: 80%; filter: drop-shadow(4px 4px 0px #000); margin-bottom: 15px; }
         
-        #logo-container { position: relative; margin-bottom: 15px; }
-        #logo { width: 350px; max-width: 80%; filter: drop-shadow(4px 4px 0px #000); }
-        
-        /* Bedrock Üslublu Düymələr */
         .mc-btn { width: 280px; background: #4a4a4a; border: 3px solid #000; padding: 10px; text-align: center; font-weight: bold; font-size: 16px; color: #e0e0e0; cursor: pointer; border-radius: 4px; box-shadow: inset -4px -4px #2e2e2e, inset 4px 4px #8b8b8b; text-shadow: 2px 2px #000; margin-bottom: 8px; }
         .mc-btn:hover { color: #fff; border-color: #fff; background: #5a5a5a; }
-        .mc-btn:active { box-shadow: inset 4px 4px #2e2e2e, inset -4px -4px #8b8b8b; padding-top: 12px; padding-bottom: 8px; }
 
-        /* Sol Alt: Microsoft Hesabı */
-        #mc-sign-in { position: absolute; bottom: 15px; left: 15px; width: auto; padding: 8px 15px; font-size: 12px; background: #107c41; box-shadow: inset -3px -3px #0b522b, inset 3px 3px #1cd470; }
+        /* SON GİRDİYİN DÜNYALAR */
+        #recent-worlds { background: rgba(0,0,0,0.6); border: 2px solid #4a4a4a; padding: 10px; width: 280px; border-radius: 4px; margin-bottom: 10px; text-align: center; font-size: 12px; }
+        .world-item { background: #222; padding: 5px; margin-top: 5px; border: 1px solid #555; border-radius: 2px; color: #55ff55; font-weight: bold; }
+
+        #mc-sign-in { position: absolute; bottom: 15px; left: 15px; width: auto; padding: 6px 12px; font-size: 11px; background: #107c41; }
         
-        /* Sağ Alt: Sürüm Versiyası */
-        #mc-version { position: absolute; bottom: 15px; right: 15px; color: #55ff55; font-weight: bold; font-size: 13px; text-shadow: 2px 2px #000; }
+        /* 👑 SƏNİN İSTƏDİYİN ÖZƏL YAZI SAHƏSİ */
+        #mc-version { position: absolute; bottom: 15px; right: 15px; color: #ffff55; font-weight: bold; font-size: 13px; text-shadow: 2px 2px #000; text-align: right; }
 
-        /* Sağ Tərəf: Skin və Profil Sahəsi */
-        #skin-container { position: absolute; right: 50px; top: 40%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        #steve-avatar { width: 80px; height: 140px; background: url('https://minecraft.wiki/images/Steve_JE2_BE2.png?12519') no-repeat center; background-size: contain; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.5)); }
-        .skin-btn { background: rgba(0,0,0,0.6); border: 2px solid #fff; padding: 5px 12px; font-size: 12px; color: #fff; font-weight: bold; border-radius: 4px; cursor: pointer; }
+        /* DÜNYA YARATMA MENYUSU */
+        #create-world-menu { position: absolute; width: 100%; height: 100%; background: #2c2c2c; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 110; }
+        .setting-group { background: #202020; border: 2px solid #000; padding: 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 5px; width: 300px; }
+        .setting-group input, .setting-group select { background: #141414; border: 2px solid #4a4a4a; padding: 6px; color: #fff; }
 
-        /* ⚙️ AYARLAR MENYUSU (BEDROCK REAL INTERFACE) */
-        #settings-menu { position: absolute; width: 100%; height: 100%; background: rgba(20,20,20,0.95); display: none; z-index: 150; padding: 20px; }
-        #settings-title { text-align: center; font-size: 20px; font-weight: bold; text-shadow: 2px 2px #000; margin-bottom: 15px; }
-        
-        #settings-wrapper { display: flex; width: 100%; height: calc(100% - 80px); border: 3px solid #000; background: #2c2c2c; }
-        
-        /* Ayarlar Sol Sekmələr */
-        #settings-tabs { width: 30%; background: #202020; border-right: 3px solid #000; overflow-y: auto; display: flex; flex-direction: column; }
-        .tab-btn { padding: 12px; text-align: left; font-weight: bold; font-size: 14px; border-bottom: 2px solid #151515; cursor: pointer; text-shadow: 1px 1px #000; color: #aaa; }
-        .tab-btn.active { background: #4a4a4a; color: #ffff55; }
-        
-        /* Ayarlar Sağ Məzmun */
-        #settings-content { width: 70%; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        .setting-row { display: flex; flex-direction: column; gap: 5px; }
-        .setting-row label { font-size: 13px; font-weight: bold; color: #ddd; }
-        .setting-row input[type="range"] { accent-color: #55ff55; height: 8px; cursor: pointer; }
-        .setting-row select { background: #141414; border: 2px solid #4a4a4a; padding: 8px; color: #fff; font-weight: bold; }
-
-        /* DÜNYA YARATMA (YENİLƏNDİ) */
-        #create-world-menu { position: absolute; width: 100%; height: 100%; background: #2c2c2c; display: none; flex-direction: column; padding: 20px; z-index: 110; overflow-y: auto; align-items: center; }
-        .setting-group { background: #202020; border: 2px solid #000; padding: 12px; margin-bottom: 10px; border-radius: 5px; display: flex; flex-direction: column; gap: 5px; width: 100%; max-width: 400px; }
-        .setting-group label { font-weight: bold; color: #aaa; font-size: 12px; }
-        .setting-group input, .setting-group select { background: #141414; border: 2px solid #4a4a4a; padding: 6px; color: #fff; font-size: 14px; }
-        .action-buttons { display: flex; gap: 15px; margin-top: 15px; }
-
-        /* SECONDARY LOADING SCREEN */
-        #loading-screen { position: absolute; width: 100%; height: 100%; background: #141414; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 120; }
-        #loading-bar-bg { width: 250px; height: 12px; background: #333; border: 2px solid #000; margin-top: 15px; overflow: hidden; }
-        #loading-bar { width: 0%; height: 100%; background: #55ff55; }
-
-        /* GAME HUD & CANVAS */
+        /* OYUN HUD ELEMƏNTLƏRİ */
         #game-canvas { width: 100%; height: 100%; display: none; }
         #crosshair { position: absolute; top: 50%; left: 50%; width: 16px; height: 16px; transform: translate(-50%, -50%); pointer-events: none; z-index: 10; display: none; }
-        #crosshair::before, #crosshair::after { content: ''; position: absolute; background: #fff; opacity: 0.8; }
-        #crosshair::before { top: 7px; left: 0; width: 16px; height: 2px; }
-        #crosshair::after { top: 0; left: 7px; width: 2px; height: 16px; }
+        #crosshair::before { content: ''; position: absolute; top: 7px; left: 0; width: 16px; height: 2px; background: #fff; opacity: 0.8; }
+        #crosshair::after { content: ''; position: absolute; top: 0; left: 7px; width: 2px; height: 16px; background: #fff; opacity: 0.8; }
 
-        /* CONTROLS */
-        #mobile-joystick { position: absolute; bottom: 30px; left: 30px; width: 110px; height: 110px; background: rgba(255,255,255,0.15); border: 3px solid rgba(255,255,255,0.4); border-radius: 50%; display: none; z-index: 50; touch-action: none; }
-        #joystick-stick { position: absolute; top: 30px; left: 30px; width: 44px; height: 44px; background: rgba(255,255,255,0.6); border-radius: 50%; }
-        #mobile-jump { position: absolute; bottom: 45px; right: 30px; width: 60px; height: 60px; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.5); border-radius: 50%; display: none; z-index: 50; text-align: center; line-height: 55px; font-weight: bold; font-size: 22px; }
+        #pause-btn { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.6); border: 2px solid #fff; padding: 6px 14px; font-weight: bold; cursor: pointer; z-index: 60; display: none; border-radius: 4px; font-size: 12px; }
 
-        #stats-panel { position: absolute; bottom: 72px; left: 50%; transform: translateX(-50%); display: none; width: 390px; justify-content: space-between; pointer-events: none; z-index: 55; padding: 0 5px; }
-        .stat-row { display: flex; gap: 1px; font-size: 14px; }
-        .heart { color: #ff2222; text-shadow: 1px 1px #000; }
-        .hunger { color: #ffaa00; text-shadow: 1px 1px #000; }
+        /* MOBİL İDARƏETMƏ (JOYSTICK & JUMP) */
+        #mobile-joystick { position: absolute; bottom: 30px; left: 30px; width: 100px; height: 100px; background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.4); border-radius: 50%; display: none; z-index: 50; touch-action: none; }
+        #joystick-stick { position: absolute; top: 28px; left: 28px; width: 40px; height: 40px; background: rgba(255,255,255,0.6); border-radius: 50%; }
+        #mobile-jump { position: absolute; bottom: 45px; right: 30px; width: 55px; height: 55px; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.5); border-radius: 50%; display: none; z-index: 50; text-align: center; line-height: 50px; font-weight: bold; font-size: 20px; }
 
-        #hotbar-container { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: none; gap: 3px; background: rgba(0,0,0,0.55); padding: 4px; border-radius: 2px; border: 2px solid #4a4a4a; z-index: 55; align-items: center; }
-        .hotbar-slot { width: 38px; height: 38px; background: #8b8b8b; border: 3px solid #3c3c3c; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; text-align: center; color: #fff; cursor: pointer; }
-        .hotbar-slot.active { border-color: #ffff55; background: #b0b0b0; box-shadow: 0 0 4px #ffff55; }
-        #btn-inventory-toggle { width: 38px; height: 38px; background: #555; border: 3px solid #000; font-weight: bold; text-align: center; line-height: 32px; cursor: pointer; color: #ffff55; }
+        #stats-panel { position: absolute; bottom: 72px; left: 50%; transform: translateX(-50%); display: none; width: 360px; justify-content: space-between; pointer-events: none; z-index: 55; }
+        #hotbar-container { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: none; gap: 3px; background: rgba(0,0,0,0.6); padding: 4px; border: 2px solid #4a4a4a; z-index: 55; }
+        .hotbar-slot { width: 40px; height: 40px; background: #8b8b8b; border: 3px solid #3c3c3c; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: bold; text-align: center; color: #fff; cursor: pointer; }
+        .hotbar-slot.active { border-color: #ffff55; background: #b0b0b0; }
+        #btn-inventory-toggle { width: 40px; height: 40px; background: #555; border: 3px solid #000; font-weight: bold; text-align: center; line-height: 34px; cursor: pointer; color: #ffff55; }
 
-        #inventory-screen { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; background: rgba(44, 44, 44, 0.98); border: 4px solid #000; padding: 15px; display: none; z-index: 200; box-shadow: 0 0 20px #000; }
-        .inv-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; }
-        .inv-item { background: #8b8b8b; border: 3px solid #3c3c3c; padding: 8px 4px; text-align: center; font-weight: bold; font-size: 11px; cursor: pointer; color: #000; }
-        .inv-item:hover { background: #ffff55; }
-        #close-inv { width: 100%; margin-top: 15px; background: #ac3232; padding: 6px; text-align: center; font-weight: bold; border: 2px solid #000; cursor: pointer; }
-        
-        #dimension-indicator { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.7); padding: 5px 12px; border-radius: 3px; font-size: 11px; font-weight: bold; color: #55ff55; display: none; pointer-events: none; }
+        /* İNVENVTAR */
+        #inventory-screen { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; background: rgba(44, 44, 44, 0.98); border: 4px solid #000; padding: 15px; display: none; z-index: 200; }
+        .inv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+        .inv-item { background: #8b8b8b; border: 3px solid #3c3c3c; padding: 10px 2px; text-align: center; font-weight: bold; font-size: 11px; cursor: pointer; color: #fff; text-shadow: 1px 1px #000; }
     </style>
 </head>
 <body>
 
     <div id="mojang-screen">
         <div id="mojang-logo">MOJANG STUDIOS</div>
-        <div id="mojang-start-btn" onclick="requestFullscreenAndStart()">OYNA (MİNECRAFT BEDROCK)</div>
-        <div id="mojang-load-text" style="display:none;">Yüklənir...</div>
-        <div id="mojang-bar-bg" style="display:none;"><div id="mojang-bar"></div></div>
-        <div id="mojang-percent" style="display:none;">0%</div>
+        <div id="mojang-start-btn" onclick="startEngineAndMenu()">DƏXİL OL (VAGIF ED.)</div>
     </div>
 
     <div id="main-menu">
         <div id="menu-panorama"></div>
         <div id="menu-content">
-            <div id="logo-container">
-                <img id="logo" src="https://upload.wikimedia.org/wikipedia/en/5/51/Minecraft_logo.svg" alt="Minecraft">
-            </div>
+            <img id="logo" src="https://upload.wikimedia.org/wikipedia/en/5/51/Minecraft_logo.svg" alt="Minecraft">
             
-            <div class="mc-btn" onclick="openCreateMenu()">Oyna</div>
-            <div class="mc-btn" onclick="toggleSettings(true)">Ayarlar</div>
-            <div class="mc-btn" style="color: #aaa; cursor: not-allowed;">Realms (Tezliklə)</div>
-
-            <div class="mc-btn" id="mc-sign-in" onclick="alert('Microsoft Hesabına Giriş funksiyası tezliklə aktiv olacaq!')">Sign In with Microsoft</div>
-
-            <div id="skin-container">
-                <div id="steve-avatar"></div>
-                <div class="skin-btn" onclick="alert('Skin Mağazası tezliklə əlavə olunacaq!')">Skin Dəyiş</div>
+            <div id="recent-worlds">
+                <strong>Son Girdiyin Dünyalar:</strong>
+                <div id="worlds-list"><span style="color:#aaa;">Dünya tapılmadı</span></div>
             </div>
 
-            <div id="mc-version">v1.20.80 Mobile Master</div>
+            <div class="mc-btn" onclick="openCreateMenu()">Oyna (Dünya Yarat)</div>
+            <div class="mc-btn" onclick="alert('Ayarlar sistemi Vagif Edition üçün optimizasiya edilib!')">Ayarlar</div>
+            <div class="mc-btn" id="mc-sign-in">Sign In with Microsoft</div>
+            
+            <div id="mc-version">v1.20.80 Pocket Edition<br><span style="color:#55ff55;">Game Created: Vagif Eliyev</span></div>
         </div>
-    </div>
-
-    <div id="settings-menu">
-        <div id="settings-title">Ayarlar</div>
-        <div id="settings-wrapper">
-            <div id="settings-tabs">
-                <div class="tab-btn active" id="tab-audio-btn" onclick="switchSettingsTab('audio')">🔊 Səs Ayarları</div>
-                <div class="tab-btn" id="tab-video-btn" onclick="switchSettingsTab('video')">📺 Ekran / Qrafika</div>
-                <div class="tab-btn" id="tab-lang-btn" onclick="switchSettingsTab('lang')">🌐 Dil (Language)</div>
-            </div>
-            <div id="settings-content">
-                <div id="set-audio" class="set-section">
-                    <div class="setting-row">
-                        <label>Ana Musiqi Səsi:</label>
-                        <input type="range" min="0" max="100" value="80">
-                    </div>
-                    <div class="setting-row" style="margin-top: 10px;">
-                        <label>Blok və Effekt Səsləri:</label>
-                        <input type="range" min="0" max="100" value="100">
-                    </div>
-                </div>
-                <div id="set-video" class="set-section" style="display:none;">
-                    <div class="setting-row">
-                        <label>Parlaqlıq (Brightness):</label>
-                        <input type="range" min="0" max="100" value="70">
-                    </div>
-                    <div class="setting-row" style="margin-top: 10px;">
-                        <label>Render Məsafəsi (Chunk):</label>
-                        <select>
-                            <option>4 Chunks (Aşağı Hardver)</option>
-                            <option selected>8 Chunks (Normal)</option>
-                            <option>16 Chunks (Yüksək)</option>
-                        </select>
-                    </div>
-                </div>
-                <div id="set-lang" class="set-section" style="display:none;">
-                    <div class="setting-row">
-                        <label>Oyun Dili:</label>
-                        <select>
-                            <option selected>Azərbaycan dili</option>
-                            <option>English</option>
-                            <option>Türkçe</option>
-                            <option>Русский</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="mc-btn" style="margin: 15px auto 0 auto; width: 15px; padding: 8px 60px;" onclick="toggleSettings(false)">Geri</div>
     </div>
 
     <div id="create-world-menu">
-        <div style="font-size:18px; font-weight:bold; margin-bottom:15px; text-shadow:2px 2px #000;">Create New World</div>
         <div class="setting-group">
-            <label>World Name:</label>
-            <input type="text" id="world-name" value="Bedrock Mobile PE">
+            <label>Dünya Adı:</label>
+            <input type="text" id="world-name" value="Vagif-in Dunyasi">
         </div>
         <div class="setting-group">
-            <label>Game Mode:</label>
-            <select id="game-mode">
-                <option value="creative">Creative</option>
-                <option value="survival">Survival</option>
-            </select>
+            <label>Oyun Modu:</label>
+            <select id="game-mode"><option>Creative (Sonsuz Blok)</option></select>
         </div>
-        <div class="action-buttons">
-            <div class="mc-btn" style="background:#107c41; width:120px;" onclick="startLoadingWorld()">Create</div>
-            <div class="mc-btn" style="background:#ac3232; width:120px;" onclick="document.getElementById('create-world-menu').style.display='none'">Cancel</div>
+        <div style="display:flex; gap:10px;">
+            <div class="mc-btn" style="width:120px; background:#107c41;" onclick="buildWorld()">Dünyanı Aç</div>
+            <div class="mc-btn" style="width:120px; background:#ac3232;" onclick="document.getElementById('create-world-menu').style.display='none'">Ləğv Et</div>
         </div>
     </div>
 
-    <div id="loading-screen">
-        <div style="font-size:18px; font-weight:bold; color:#55ff55;">Building Terrain...</div>
-        <div id="loading-bar-bg"><div id="loading-bar"></div></div>
-    </div>
-
+    <div id="pause-btn" onclick="exitToMainMenu()">Ana Menyuya Qayıt</div>
     <div id="crosshair"></div>
-    <div id="dimension-indicator">Dimension: Overworld</div>
     <div id="mobile-joystick"><div id="joystick-stick"></div></div>
     <div id="mobile-jump">↑</div>
 
     <div id="stats-panel">
-        <div class="stat-row" id="heart-row">❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️</div>
-        <div class="stat-row" id="hunger-row">🍖🍖🍖🍖🍖🍖🍖🍖🍖🍖</div>
+        <div style="color:#ff2222;">❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️</div>
+        <div style="color:#ffaa00;">🍖🍖🍖🍖🍖🍖🍖🍖🍖🍖</div>
     </div>
 
     <div id="hotbar-container">
@@ -239,239 +127,234 @@
     </div>
 
     <div id="inventory-screen">
-        <h3 style="text-align:center; color:#ffff55; font-size: 16px;">Eşya Seç və Bara Qoy</h3>
+        <h4 style="text-align:center; color:#ffff55; margin-bottom:5px;">Əlinə Blok Al</h4>
         <div class="inv-grid">
-            <div class="inv-item" onclick="pushToHotbar('Grass', 0x4caf50)">Grass</div>
-            <div class="inv-item" onclick="pushToHotbar('Wood', 0x8b5a2b)">Wood</div>
-            <div class="inv-item" onclick="pushToHotbar('Bed', 0xe74c3c)">Bed</div>
-            <div class="inv-item" onclick="pushToHotbar('Nether', 0x78281f)">Nether</div>
-            <div class="inv-item" onclick="pushToHotbar('Stone', 0x7f8c8d)">Stone</div>
-            <div class="inv-item" onclick="pushToHotbar('Brick', 0xd35400)">Brick</div>
+            <div class="inv-item" onclick="selectBlock('Grass', 'grass')">Grass (Ot)</div>
+            <div class="inv-item" onclick="selectBlock('Stone', 'stone')">Stone (Daş)</div>
+            <div class="inv-item" onclick="selectBlock('Wood', 'wood')">Wood (Taxta)</div>
+            <div class="inv-item" onclick="selectBlock('Leaves', 'leaves')">Leaves (Yarpaq)</div>
+            <div class="inv-item" onclick="selectBlock('Water', 'water')">Water (Su)</div>
+            <div class="inv-item" onclick="selectBlock('Lava', 'lava')">Lava (Lav)</div>
         </div>
-        <div id="close-inv" onclick="toggleInventory()">BAĞLA</div>
+        <div class="mc-btn" style="width:100%; margin-top:12px; background:#ac3232; padding:5px;" onclick="toggleInventory()">Bağla</div>
     </div>
 
     <div id="game-canvas"></div>
 
     <script>
-        // 📱 FULLSCREEN & LANDSCAPE LOGİKASI
-        function requestFullscreenAndStart() {
-            document.getElementById('mojang-start-btn').style.display = 'none';
-            document.getElementById('mojang-load-text').style.display = 'block';
-            document.getElementById('mojang-bar-bg').style.display = 'block';
-            document.getElementById('mojang-percent').style.display = 'block';
+        // PROSEDURAL PİKSEL TEKSTURALARI
+        function createMcTexture(type) {
+            const canvas = document.createElement('canvas'); canvas.width = 16; canvas.height = 16;
+            const ctx = canvas.getContext('2d');
+            if(type === 'grass') {
+                ctx.fillStyle = '#557a2b'; ctx.fillRect(0,0,16,16);
+                ctx.fillStyle = '#4d6e27'; for(let i=0;i<15;i++) ctx.fillRect(Math.random()*16,Math.random()*16,2,2);
+            } else if(type === 'stone') {
+                ctx.fillStyle = '#737373'; ctx.fillRect(0,0,16,16);
+                ctx.fillStyle = '#5a5a5a'; for(let i=0;i<20;i++) ctx.fillRect(Math.random()*16,Math.random()*16,2,1);
+            } else if(type === 'wood') {
+                ctx.fillStyle = '#664c28'; ctx.fillRect(0,0,16,16);
+                ctx.fillStyle = '#4a3315'; for(let i=0;i<4;i++) ctx.fillRect(0, Math.random()*16, 16, 2);
+            } else if(type === 'leaves') {
+                ctx.fillStyle = '#2c5d1e'; ctx.fillRect(0,0,16,16);
+                ctx.fillStyle = '#1e3f14'; for(let i=0;i<15;i++) ctx.fillRect(Math.random()*16,Math.random()*16,2,2);
+            } else if(type === 'water') {
+                ctx.fillStyle = '#4444ff'; ctx.fillRect(0,0,16,16);
+                ctx.fillStyle = '#1a1aff'; for(let i=0;i<8;i++) ctx.fillRect(Math.random()*16,Math.random()*16,3,2);
+            } else if(type === 'lava') {
+                ctx.fillStyle = '#ff4500'; ctx.fillRect(0,0,16,16);
+                ctx.fillStyle = '#ffcc00'; for(let i=0;i<10;i++) ctx.fillRect(Math.random()*16,Math.random()*16,2,2);
+            }
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.magFilter = THREE.NearestFilter; tex.minFilter = THREE.NearestFilter;
+            return tex;
+        }
 
+        const textures = {
+            grass: createMcTexture('grass'), stone: createMcTexture('stone'),
+            wood: createMcTexture('wood'), leaves: createMcTexture('leaves'),
+            water: createMcTexture('water'), lava: createMcTexture('lava')
+        };
+
+        // RƏQƏMSAL MC POP SƏS EFFEKTİ
+        function playBlockSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(130, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(35, ctx.currentTime + 0.12);
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.12);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + 0.12);
+            } catch(e){}
+        }
+
+        function startEngineAndMenu() {
+            document.getElementById('mojang-screen').style.display = 'none';
+            document.getElementById('main-menu').style.display = 'block';
+            loadRecentWorlds();
             const docElm = document.documentElement;
             if (docElm.requestFullscreen) docElm.requestFullscreen();
-            else if (docElm.webkitRequestFullscreen) docElm.webkitRequestFullscreen();
+        }
 
-            if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('landscape').catch(() => {});
+        function loadRecentWorlds() {
+            const lastWorld = localStorage.getItem('mc_last_world');
+            if(lastWorld) {
+                document.getElementById('worlds-list').innerHTML = `<div class="world-item">🌍 ${lastWorld} (Vagif Edition)</div>`;
             }
-
-            let mojangProgress = 0;
-            const mBar = document.getElementById('mojang-bar');
-            const mPercent = document.getElementById('mojang-percent');
-
-            const mojangInterval = setInterval(() => {
-                mojangProgress += Math.floor(Math.random() * 8) + 2;
-                if(mojangProgress > 100) mojangProgress = 100;
-                mBar.style.width = mojangProgress + '%';
-                mPercent.innerText = mojangProgress + '%';
-
-                if(mojangProgress >= 100) {
-                    clearInterval(mojangInterval);
-                    document.getElementById('mojang-screen').style.display = 'none';
-                    document.getElementById('main-menu').style.display = 'block';
-                    window.dispatchEvent(new Event('resize'));
-                }
-            }, 50);
-        }
-
-        // ⚙️ AYARLAR SİSTEMİ LOGİKASI
-        function toggleSettings(show) {
-            document.getElementById('settings-menu').style.display = show ? 'block' : 'none';
-        }
-
-        function switchSettingsTab(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.set-section').forEach(s => s.style.display = 'none');
-            
-            document.getElementById(`tab-${tabName}-btn`).classList.add('active');
-            document.getElementById(`set-${tabName}`).style.display = 'block';
         }
 
         function openCreateMenu() { document.getElementById('create-world-menu').style.display = 'flex'; }
-        
-        function startLoadingWorld() {
-            document.getElementById('create-world-menu').style.display = 'none';
-            document.getElementById('main-menu').style.display = 'none';
-            document.getElementById('loading-screen').style.display = 'flex';
-
-            let prog = 0;
-            const bar = document.getElementById('loading-bar');
-            const lInt = setInterval(() => {
-                prog += 15;
-                bar.style.width = prog + '%';
-                if(prog >= 100) {
-                    clearInterval(lInt);
-                    document.getElementById('loading-screen').style.display = 'none';
-                    initMobileMinecraft();
-                }
-            }, 100);
-        }
-
-        let isInventoryOpen = false;
-        function toggleInventory() {
-            isInventoryOpen = !isInventoryOpen;
-            document.getElementById('inventory-screen').style.display = isInventoryOpen ? 'block' : 'none';
-        }
 
         let hotbarBlocks = [
-            { name: 'Grass', color: 0x4caf50 }, { name: '-', color: null }, { name: '-', color: null }, 
-            { name: '-', color: null }, { name: '-', color: null }, { name: '-', color: null }, 
-            { name: '-', color: null }, { name: '-', color: null }, { name: '-', color: null }
+            { name: 'Grass', type: 'grass' }, { name: '-', type: null }, { name: '-', type: null },
+            { name: '-', type: null }, { name: '-', type: null }, { name: '-', type: null },
+            { name: '-', type: null }, { name: '-', type: null }, { name: '-', type: null }
         ];
-        let currentActiveSlotIndex = 0;
+        let activeSlot = 0; let isInventory = false;
 
-        function pushToHotbar(name, color) {
-            let placed = false;
-            for(let i=0; i<9; i++) {
-                if(hotbarBlocks[i].name === '-' || hotbarBlocks[i].name === name) {
-                    hotbarBlocks[i] = { name: name, color: color };
-                    document.getElementById('slot-' + i).innerText = name;
-                    placed = true;
-                    break;
-                }
-            }
-            if(!placed) {
-                hotbarBlocks[currentActiveSlotIndex] = { name: name, color: color };
-                document.getElementById('slot-' + currentActiveSlotIndex).innerText = name;
-            }
+        function toggleInventory() {
+            isInventory = !isInventory;
+            document.getElementById('inventory-screen').style.display = isInventory ? 'block' : 'none';
+        }
+
+        function selectBlock(name, type) {
+            hotbarBlocks[activeSlot] = { name: name, type: type };
+            document.getElementById('slot-'+activeSlot).innerText = name;
             toggleInventory();
-            checkDimensionChange(name);
         }
 
-        function setActiveSlot(index) {
-            currentActiveSlotIndex = index;
+        function setActiveSlot(idx) {
+            activeSlot = idx;
             document.querySelectorAll('.hotbar-slot').forEach(s => s.classList.remove('active'));
-            document.getElementById('slot-' + index).classList.add('active');
-            if(hotbarBlocks[index].name !== '-') checkDimensionChange(hotbarBlocks[index].name);
+            document.getElementById('slot-'+idx).classList.add('active');
         }
 
-        function checkDimensionChange(blockName) {
-            if(blockName === 'Nether') switchToNether();
-            else if (blockName !== '-') switchToOverworld();
-        }
-
-        // ==========================================
-        // 3D GAME MOTORU (THREE.JS)
-        // ==========================================
-        let scene, camera, renderer, blocks = [];
+        // ====================================================
+        // 🚀 3D ENGINE LOGİKASI (CANLI HEYVANLAR VƏ GÖLLƏR)
+        // ====================================================
+        let scene, camera, renderer, blocks = [], animals = [];
         let moveX = 0, moveZ = 0, isMoving = false;
 
-        function initMobileMinecraft() {
+        function buildWorld() {
+            const wName = document.getElementById('world-name').value;
+            localStorage.setItem('mc_last_world', wName);
+
+            document.getElementById('create-world-menu').style.display = 'none';
+            document.getElementById('main-menu').style.display = 'none';
+            
+            // HUD Göstər
             document.getElementById('game-canvas').style.display = 'block';
             document.getElementById('crosshair').style.display = 'block';
             document.getElementById('mobile-joystick').style.display = 'block';
             document.getElementById('mobile-jump').style.display = 'block';
             document.getElementById('hotbar-container').style.display = 'flex';
-            document.getElementById('dimension-indicator').style.display = 'block';
             document.getElementById('stats-panel').style.display = 'flex';
+            document.getElementById('pause-btn').style.display = 'block';
 
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x5c9eff);
-            scene.fog = new THREE.FogExp2(0x5c9eff, 0.04);
+            scene.background = new THREE.Color(0x7ec0ee);
+            scene.fog = new THREE.FogExp2(0x7ec0ee, 0.025);
 
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 3, 6);
+            camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 500);
+            camera.position.set(0, 3, 5);
 
-            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer = new THREE.WebGLRenderer({ antialias: false });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            document.getElementById('game-canvas').appendChild(renderer.domElement);
+            document.getElementById('game-canvas').replaceChildren(renderer.domElement);
 
-            scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-            let sun = new THREE.DirectionalLight(0xffffff, 0.7);
-            sun.position.set(5, 20, 5);
-            scene.add(sun);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.85));
 
-            generateWorldBlocks(0x4caf50);
+            const boxGeom = new THREE.BoxGeometry(1, 1, 1);
+            
+            // 20x20 Xəritə Generasiyası (Su və Lav Gölləri ilə)
+            for(let x = -12; x <= 12; x++) {
+                for(let z = -12; z <= 12; z++) {
+                    let blockType = 'grass';
+                    
+                    // Təsadüfi Su Gölləri (Mərkəzdən uzaqda)
+                    if(x > 5 && x < 9 && z > 3 && z < 7) blockType = 'water';
+                    // Təsadüfi Lav Gölləri
+                    else if(x < -6 && x > -9 && z < -4 && z > -7) blockType = 'lava';
 
-            // JOYSTICK
+                    const mat = new THREE.MeshLambertMaterial({ map: textures[blockType] });
+                    const mesh = new THREE.Mesh(boxGeom, mat);
+                    mesh.position.set(x, 0, z);
+                    scene.add(mesh);
+                    blocks.push(mesh);
+
+                    // Əgər otluqdisa, bəzi yerlərdə ağac bitir
+                    if(blockType === 'grass' && Math.random() < 0.03 && (Math.abs(x) > 2 || Math.abs(z) > 2)) {
+                        createTree(x, 1, z);
+                    }
+                }
+            }
+
+            // CANLI HEYVAN YARATMAQ (Sadə hərəkət edən MC Qoyunları)
+            for(let i=0; i<3; i++) {
+                spawnAnimal(Math.random()*10 - 5, 1, Math.random()*10 - 5);
+            }
+
+            // MOBİL JOYSTICK SİSTEMİ
             const joystick = document.getElementById('mobile-joystick');
             const stick = document.getElementById('joystick-stick');
-            let joyCenterX = 0, joyCenterY = 0;
+            let jcX = 0, jcY = 0;
 
             joystick.addEventListener('touchstart', (e) => {
-                isMoving = true;
-                const rect = joystick.getBoundingClientRect();
-                joyCenterX = rect.left + rect.width / 2;
-                joyCenterY = rect.top + rect.height / 2;
+                isMoving = true; const r = joystick.getBoundingClientRect();
+                jcX = r.left + r.width/2; jcY = r.top + r.height/2;
             });
-
             joystick.addEventListener('touchmove', (e) => {
-                if (!isMoving) return;
-                const touch = e.touches[0];
-                let dX = touch.clientX - joyCenterX;
-                let dY = touch.clientY - joyCenterY;
-                const distance = Math.min(Math.sqrt(dX*dX + dY*dY), 40);
-                const angle = Math.atan2(dY, dX);
-                stick.style.transform = `translate(${Math.cos(angle)*distance}px, ${Math.sin(angle)*distance}px)`;
-                moveX = Math.cos(angle) * (distance / 40);
-                moveZ = Math.sin(angle) * (distance / 40);
+                if(!isMoving) return;
+                const t = e.touches[0];
+                let dX = t.clientX - jcX, dY = t.clientY - jcY;
+                let dist = Math.min(Math.sqrt(dX*dX + dY*dY), 35);
+                let angle = Math.atan2(dY, dX);
+                stick.style.transform = `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px)`;
+                moveX = Math.cos(angle) * (dist / 35); moveZ = Math.sin(angle) * (dist / 35);
             });
-
             joystick.addEventListener('touchend', () => {
-                isMoving = false;
-                stick.style.transform = 'translate(0px, 0px)';
+                isMoving = false; stick.style.transform = 'translate(0px,0px)';
                 moveX = 0; moveZ = 0;
             });
 
-            // SURUSDURME KAMERA
-            let lastTouchX = 0, lastTouchY = 0;
+            // KAMERA BAXIŞI (Ekranın sağ tərəfi ilə idarə olunur)
+            let lastTX = 0, lastTY = 0;
             window.addEventListener('touchstart', (e) => {
                 if(e.touches[0].clientX > window.innerWidth / 3) {
-                    lastTouchX = e.touches[0].clientX;
-                    lastTouchY = e.touches[0].clientY;
+                    lastTX = e.touches[0].clientX; lastTY = e.touches[0].clientY;
                 }
             });
-
             window.addEventListener('touchmove', (e) => {
-                if(isInventoryOpen) return;
+                if(isInventory) return;
                 if(e.touches[0].clientX > window.innerWidth / 3) {
-                    let tX = e.touches[0].clientX;
-                    let tY = e.touches[0].clientY;
-                    camera.rotation.y -= (tX - lastTouchX) * 0.006;
-                    camera.rotation.x -= (tY - lastTouchY) * 0.006;
-                    camera.rotation.x = Math.max(-Math.PI/2.5, Math.min(Math.PI/2.5, camera.rotation.x));
-                    lastTouchX = tX; lastTouchY = tY;
+                    let tX = e.touches[0].clientX, tY = e.touches[0].clientY;
+                    camera.rotation.y -= (tX - lastTX) * 0.007;
+                    camera.rotation.x -= (tY - lastTY) * 0.007;
+                    camera.rotation.x = Math.max(-Math.PI/2.4, Math.min(Math.PI/2.4, camera.rotation.x));
+                    lastTX = tX; lastTY = tY;
                 }
             });
 
-            // BLOK YERLƏŞDİRMƏ
+            // SENSORLA BLOK QOYMAQ
             window.addEventListener('touchend', (e) => {
-                if (e.changedTouches[0].clientX > window.innerWidth / 3 && e.changedTouches[0].clientY < window.innerHeight - 100) {
-                    let currentActiveBlock = hotbarBlocks[currentActiveSlotIndex];
-                    if(currentActiveBlock.name === '-') return;
+                if(e.changedTouches[0].clientX > window.innerWidth / 3 && e.changedTouches[0].clientY < window.innerHeight - 80) {
+                    let currentB = hotbarBlocks[activeSlot];
+                    if(!currentB || currentB.type === null) return;
 
                     const raycaster = new THREE.Raycaster();
                     raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
                     const intersects = raycaster.intersectObjects(blocks);
 
-                    if (intersects.length > 0) {
+                    if(intersects.length > 0) {
                         const hit = intersects[0];
-                        const normal = hit.face.normal;
-                        const geom = new THREE.BoxGeometry(1, 1, 1);
-                        const mat = new THREE.MeshLambertMaterial({ color: currentActiveBlock.color });
-                        const newB = new THREE.Mesh(geom, mat);
-                        newB.position.copy(hit.object.position).add(normal);
-
-                        const edges = new THREE.EdgesGeometry(geom);
-                        const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x111111 }));
-                        newB.add(line);
-
-                        scene.add(newB);
-                        blocks.push(newB);
+                        const mat = new THREE.MeshLambertMaterial({ map: textures[currentB.type] });
+                        const newMesh = new THREE.Mesh(boxGeom, mat);
+                        newMesh.position.copy(hit.object.position).add(hit.face.normal);
+                        scene.add(newMesh);
+                        blocks.push(newMesh);
+                        playBlockSound();
                     }
                 }
             });
@@ -480,54 +363,74 @@
                 if(camera.position.y <= 3) camera.position.y += 1.4;
             });
 
-            function animate() {
-                requestAnimationFrame(animate);
-                if (isMoving) {
+            // OYUN DÖVRÜ (Loop)
+            function gameLoop() {
+                if(!scene) return;
+                requestAnimationFrame(gameLoop);
+                
+                if(isMoving) {
                     camera.translateZ(moveZ * 0.09);
                     camera.translateX(moveX * 0.09);
                 }
-                if(camera.position.y > 3) camera.position.y -= 0.05;
+                if(camera.position.y > 3) camera.position.y -= 0.06;
                 if(camera.position.y < 3) camera.position.y = 3;
+
+                // Heyvanların süni hərəkəti
+                animals.forEach(anim => {
+                    anim.position.x += anim.userData.dirX * 0.02;
+                    anim.position.z += anim.userData.dirZ * 0.02;
+                    if(Math.random() < 0.01) { // Təsadüfi istiqamət dəyişməsi
+                        anim.userData.dirX = Math.random() * 2 - 1;
+                        anim.userData.dirZ = Math.random() * 2 - 1;
+                    }
+                });
+
                 renderer.render(scene, camera);
             }
-            animate();
+            gameLoop();
         }
 
-        function generateWorldBlocks(colorCode) {
-            blocks.forEach(b => scene.remove(b));
-            blocks = [];
-            const geometry = new THREE.BoxGeometry(1, 1, 1);
-            const material = new THREE.MeshLambertMaterial({ color: colorCode });
-
-            for (let x = -8; x <= 8; x++) {
-                for (let z = -8; z <= 8; z++) {
-                    const block = new THREE.Mesh(geometry, material);
-                    block.position.set(x, 0, z);
-                    const edges = new THREE.EdgesGeometry(geometry);
-                    const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x111111 }));
-                    block.add(line);
-                    scene.add(block);
-                    blocks.push(block);
+        // Ağac Yaratmaq
+        function createTree(x, y, z) {
+            const boxGeom = new THREE.BoxGeometry(1, 1, 1);
+            const trunkMat = new THREE.MeshLambertMaterial({ map: textures.wood });
+            const leafMat = new THREE.MeshLambertMaterial({ map: textures.leaves });
+            for(let i=0; i<3; i++) {
+                const trunk = new THREE.Mesh(boxGeom, trunkMat); trunk.position.set(x, y + i, z);
+                scene.add(trunk); blocks.push(trunk);
+            }
+            for(let lx=-1; lx<=1; lx++) {
+                for(let lz=-1; lz<=1; lz++) {
+                    const leaf = new THREE.Mesh(boxGeom, leafMat); leaf.position.set(x+lx, y+3, z+lz);
+                    scene.add(leaf); blocks.push(leaf);
                 }
             }
         }
 
-        function switchToNether() {
-            if(!scene) return;
-            scene.background = new THREE.Color(0x3a0505);
-            scene.fog.color = new THREE.Color(0x3a0505);
-            document.getElementById('dimension-indicator').innerText = "Dimension: Nether";
-            document.getElementById('dimension-indicator').style.color = "#ff4545";
-            generateWorldBlocks(0x78281f);
+        // Canlı Kub Heyvan Yaratmaq (Qoyun üslublu)
+        function spawnAnimal(x, y, z) {
+            const geom = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+            const mat = new THREE.MeshLambertMaterial({ color: 0xffffff }); // Ağ qoyun kubu
+            const animal = new THREE.Mesh(geom, mat);
+            animal.position.set(x, y, z);
+            
+            // Hərəkət datası yükləyirik
+            animal.userData = { dirX: Math.random() * 2 - 1, dirZ: Math.random() * 2 - 1 };
+            scene.add(animal);
+            animals.push(animal);
         }
 
-        function switchToOverworld() {
-            if(!scene) return;
-            scene.background = new THREE.Color(0x5c9eff);
-            scene.fog.color = new THREE.Color(0x5c9eff);
-            document.getElementById('dimension-indicator').innerText = "Dimension: Overworld";
-            document.getElementById('dimension-indicator').style.color = "#55ff55";
-            generateWorldBlocks(0x4caf50);
+        function exitToMainMenu() {
+            scene = null; camera = null; renderer = null; blocks = []; animals = [];
+            document.getElementById('game-canvas').style.display = 'none';
+            document.getElementById('crosshair').style.display = 'none';
+            document.getElementById('mobile-joystick').style.display = 'none';
+            document.getElementById('mobile-jump').style.display = 'none';
+            document.getElementById('hotbar-container').style.display = 'none';
+            document.getElementById('stats-panel').style.display = 'none';
+            document.getElementById('pause-btn').style.display = 'none';
+            document.getElementById('main-menu').style.display = 'block';
+            loadRecentWorlds();
         }
 
         window.addEventListener('resize', () => {
